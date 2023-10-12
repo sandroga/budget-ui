@@ -3,24 +3,17 @@
     <ion-title>Categories</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-grid>
-  <ion-col>
-      <ion-list>
-        <ion-item>
-          <ion-searchbar>
-          <ion-label>
-            <ion-icon name="swap-vertical" size="large"></ion-icon> Name (A-Z)</ion-label>
-          <ion-select interface="popover" label="Name A-Z">
-            <ion-select-option value="name_a-z">Name (A-Z)</ion-select-option>
-            <ion-select-option value="name_z-a">Name (Z-A)</ion-select-option>
-            <ion-select-option value="newest">Created at (newest first)</ion-select-option>
-            <ion-select-option value="oldest">Created at (oldest first)</ion-select-option>
-          </ion-select>
-          </ion-searchbar>
-        </ion-item>
-      </ion-list>
-  </ion-col>
-</ion-grid>
+  <ion-grid [fixed]="true">
+  <ion-row>
+    <ion-col>Column One</ion-col>
+    <ion-col>Column Two</ion-col>
+  </ion-row>
+  </ion-grid>
 <ion-content>
-  <h3>Markierung</h3>
+  <h3>.............................</h3>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-title> Footer </ion-title>
+  </ion-toolbar>
+</ion-footer>
