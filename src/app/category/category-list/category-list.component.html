@@ -7,10 +7,10 @@
 <ion-content>
   <ion-grid>
     <ion-row class="md hydrated">
-      <ion-col class="md hydrated" size="12" size-sm="6" style="flex">
+      <ion-col class="md hydrated" size="12" size-sm="6" style="flex:10">
         <ion-item
-          class="item-has-start-slot item md item-lines-default item-fill-none item-has-interactive-control ion-activatable ion-focusable hydrated ion-untouched ion-pristine ion-valid item-has-value">
-          <div class="item-native" part="native">
+          class="item-has-start-slot item md item-lines-default item-fill-none item-has-interactive-control ion-focusable hydrated ion-untouched ion-pristine ion-valid item-has-value">
+          <div class="item-native">
             <slot name="start">
             </slot>
             <div class="item-inner">
@@ -30,41 +30,71 @@
           </div>
           <ion-icon class="md hydrated" name="swap-vertical" role="img" slot="start"></ion-icon>
           <div class="icon-inner">
-            <svg class="ionicon s-ion-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-              <path class="ionicon-fill-none ionicon-stroke-width" d="M464 208L352 96 240 208M352 113.13V416M48 304l112 112 112-112M160 398V96"
+            <svg class="s-ion-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+              <path class="ion-icon-stroke-width" d="M464 208L352 96 240 208M352 113.13V416M48 304l112 112 112-112M160 398V96"
                     stroke-linecap="round"
                     stroke-linejoin="round">
               </path>
             </svg>
           </div>
-          <ion-select class="ng-untouched ng-pristine ng-valid md in-item has-value ion-focusable select-ltr select-justify-space-between select-label-placement-start hydrated ion-untouched ion-pristine ion-valid" formcontrolname="sort"
+          <ion-select class="ng-untouched ng-pristine ng-valid md in-item has-value ion-focusable select-ltr select-justify-space-between select-label-placement-start hydrated ion-untouched ion-pristine ion-valid"
                       interface="popover">
-            <ion-select-option class="md hydrated" id="ion-selopt-14" role="option">
+            <ion-select-option class="md hydrated" role="option">
               Created at (newest first)
             </ion-select-option>
-            <ion-select-option class="md hydrated" id="ion-selopt-15" role="option">
+            <ion-select-option class="md hydrated" role="option">
               Created at (oldest first)
             </ion-select-option>
-            <ion-select-option class="md hydrated" id="ion-selopt-16" role="option">
+            <ion-select-option class="md hydrated" role="option">
               Name (A-Z)
             </ion-select-option>
-            <ion-select-option class="md hydrated" id="ion-selopt-17" role="option">
+            <ion-select-option class="md hydrated" role="option">
               Name (Z-A)
             </ion-select-option>
             <input class="aux-input" name="ion-sel-6" type="hidden" value="name,asc">
           </ion-select>
         </ion-item>
       </ion-col>
-      <ion-col class="md hydrated" size="12" size-sm="6" style="flex">
+      <ion-col class="md hydrated" size="12" size-sm="6" style="flex:10">
         <ion-item
           class="item-has-start-slot item md item-lines-default item-fill-none hydrated ion-untouched ion-pristine ion-valid">
           <ion-icon class="md hydrated" name="search" role="img" slot="start">
           </ion-icon>
-          <ion-input class="ng-untouched ng-pristine ng-valid sc-ion-input-md-h sc-ion-input-md-s md input-label-placement-start in-item hydrated ion-untouched ion-pristine ion-valid" formcontrolname="name" maxlength="40"
+          <ion-input class="ng-untouched ng-pristine ng-valid sc-ion-input-md-h sc-ion-input-md-s md input-label-placement-start in-item hydrated ion-untouched ion-pristine ion-valid" maxlength="40"
                      placeholder="Search">
           </ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-list class="md list-md list inset hydrated" inset="true" role="list">
+    <ion-item class="item-has-start-slot item md item-lines-default item-fill-none in-list hydrated item-label" role="listitem">
+      <div class="item-native">
+        <slot name="start">
+        </slot>
+      <div class="item-inner">
+        <div class="input-wrapper">
+          <slot><ion-label></ion-label>
+          </slot>
+        </div>
+        <slot name="end"></slot>
+        <div class="item-inner-highlight"></div>
+      </div>
+      <div class="item-highlight"></div>
+      <ion-icon class="md hydrated" slot="start" size="large" name="alert-circle-outline" role="img">
+        <div class="icon-inner"></div>
+      </ion-icon>
+        <ion-label class="md hydrated" slot="fixed">
+          <slot></slot>
+          <ion-fab-button class="md hydrated">
+            <button class="button-native" type="button" aria-label="Cat">
+              <ion-icon class="md hydrated" name="add-circle-outline" aria-hidden="true" size="large" role="img">
+                <div class="icon-inner"></div>
+              </ion-icon>
+            </button>
+          </ion-fab-button>
+        </ion-label>
+      </div>
+    </ion-item>
+  </ion-list>
 </ion-content>
