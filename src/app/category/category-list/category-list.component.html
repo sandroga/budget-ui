@@ -67,29 +67,32 @@
     </ion-row>
   </ion-grid>
   <ion-list class="md list-md list inset hydrated" inset="true" role="list">
-    <ion-item class="item-has-start-slot item md item-lines-default item-fill-none in-list hydrated item-label" role="list-item">
+    <ion-item class="item-has-start-slot item md item-lines-default item-fill-none in-list hydrated item-label" role="listitem" style="display: flex; align-items: center;">
       <div class="item-native">
-        <slot name="start">
-        </slot>
-      <div class="item-inner">
-        <div class="input-wrapper">
-          <slot><ion-label></ion-label>
-          </slot>
+        <slot name="start"></slot>
+        <div class="item-inner">
+          <div class="input-wrapper">
+            <slot>
+              <ion-label></ion-label>
+            </slot>
+          </div>
+          <slot name="end"></slot>
+          <div class="item-inner-highlight"></div>
         </div>
-        <slot name="end"></slot>
-        <div class="item-inner-highlight"></div>
+        <div class="item-highlight"></div>
+
       </div>
-      <div class="item-highlight"></div>
-      <ion-icon class="md hydrated" slot="start" size="large" name="alert-circle-outline" role="img">
-        <div class="icon-inner"></div>
+      <ion-icon class="md hydrated" slot="start" role="img" name="alert-circle-outline" size="large">
       </ion-icon>
-      </div>
+      <ion-label class="sc-ion-label-md-s md hydrated">
+        No Categories found.
+      </ion-label>
     </ion-item>
   </ion-list>
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button class="md hydrated">
       <ion-icon name="add" role="img"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-
