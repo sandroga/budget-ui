@@ -1,15 +1,14 @@
 <ion-header>
   <ion-toolbar color="default">
-    <ion-title class="header-title">Categories</ion-title>
+    <ion-title>Categories</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid>
-    <ion-row class="md hydrated">
-      <ion-col class="md hydrated" size="12" size-sm="6" style="flex:10">
-        <ion-item
-          class="item-has-start-slot item md item-lines-default item-fill-none item-has-interactive-control ion-focusable hydrated ion-untouched ion-pristine ion-valid item-has-value">
+    <ion-row>
+      <ion-col size="12" size-sm="6">
+        <ion-item>
           <div class="item-native">
             <slot name="start">
             </slot>
@@ -68,7 +67,7 @@
     </ion-row>
   </ion-grid>
   <ion-list class="md list-md list inset hydrated" inset="true" role="list">
-    <ion-item class="item-has-start-slot item md item-lines-default item-fill-none in-list hydrated item-label" role="listitem">
+    <ion-item class="item-has-start-slot item md item-lines-default item-fill-none in-list hydrated item-label" role="list-item">
       <div class="item-native">
         <slot name="start">
         </slot>
@@ -84,17 +83,13 @@
       <ion-icon class="md hydrated" slot="start" size="large" name="alert-circle-outline" role="img">
         <div class="icon-inner"></div>
       </ion-icon>
-        <ion-label class="md hydrated" slot="fixed">
-          <slot></slot>
-          <ion-fab-button class="md hydrated">
-            <button class="button-native" type="button" aria-label="Cat">
-              <ion-icon class="md hydrated" name="add-circle-outline" aria-hidden="true" size="large" role="img">
-                <div class="icon-inner"></div>
-              </ion-icon>
-            </button>
-          </ion-fab-button>
-        </ion-label>
       </div>
     </ion-item>
   </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button class="md hydrated">
+      <ion-icon name="add" role="img"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
+
