@@ -7,7 +7,7 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="12" size-sm="6">
+      <ion-col size="9" size-sm="4">
         <ion-item>
           <div class="item-native">
             <slot name="start">
@@ -36,8 +36,7 @@
               </path>
             </svg>
           </div>
-          <ion-select class="ng-untouched ng-pristine ng-valid md in-item has-value ion-focusable select-ltr select-justify-space-between select-label-placement-start hydrated ion-untouched ion-pristine ion-valid"
-                      interface="popover">
+          <ion-select class="ng-untouched ng-pristine ng-valid md in-item has-value ion-focusable select-ltr select-justify-space-between select-label-placement-start hydrated ion-untouched ion-pristine ion-valid" interface="popover">
             <ion-select-option class="md hydrated" role="option">
               Created at (newest first)
             </ion-select-option>
@@ -45,16 +44,55 @@
               Created at (oldest first)
             </ion-select-option>
             <ion-select-option class="md hydrated" role="option">
+              Date (newest first)
+            </ion-select-option>
+            <ion-select-option class="md hydrated" role="option">
+              Date (oldest first)
+            </ion-select-option>
+            <ion-select-option class="md hydrated" role="option">
               Name (A-Z)
             </ion-select-option>
             <ion-select-option class="md hydrated" role="option">
               Name (Z-A)
             </ion-select-option>
-            <input class="aux-input" name="ion-sel-6" type="hidden" value="name,asc">
           </ion-select>
         </ion-item>
       </ion-col>
-      <ion-col class="md hydrated" size="12" size-sm="6" style="flex:10">
+      <ion-col size="9" size-sm="4">
+        <ion-item>
+          <div class="item-native">
+            <slot name="start">
+            </slot>
+            <div class="item-inner">
+              <div class="input-wrapper">
+                <slot>
+                </slot>
+              </div>
+              <slot name="end">
+              </slot>
+              <div class="item-inner-highlight">
+              </div>
+            </div>
+            <ion-ripple-effect class="md hydrated" role="presentation">
+            </ion-ripple-effect>
+            <div class="item-highlight">
+            </div>
+          </div>
+          <ion-icon class="md hydrated" name="swap-vertical" role="img" slot="start"></ion-icon>
+          <div class="icon-inner">
+            <svg class="s-ion-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+              <path class="ion-icon-stroke-width" d="M464 208L352 96 240 208M352 113.13V416M48 304l112 112 112-112M160 398V96"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+              </path>
+            </svg>
+          </div>
+          <ion-select class="ng-untouched ng-pristine ng-valid md in-item has-value ion-focusable select-ltr select-justify-space-between select-label-placement-start hydrated ion-untouched ion-pristine ion-valid" interface="popover" placeholder="Categories">
+            <ion-select-option></ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col class="md hydrated" size="9" size-sm="4" style="flex:10">
         <ion-item
           class="item-has-start-slot item md item-lines-default item-fill-none hydrated ion-untouched ion-pristine ion-valid">
           <ion-icon class="md hydrated" name="search" role="img" slot="start">
