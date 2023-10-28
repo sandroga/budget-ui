@@ -1,20 +1,20 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
+    <!-- Ion Menu, nur für eingeloggte Benutzer anzeigen -->
     <ion-menu contentId="main-content" type="overlay" [disabled]="(authService.currentUser() | async) === null">
-      <!-- Navigation List -->
+      <!-- Benutzerdefinierter Header -->
       <ion-content>
-        <ion-list id="menu-list">
-          <ion-list-header>
-            <ion-label>Budget UI</ion-label>
-            <ion-chip>
-              <ion-avatar>
-                <img [src]="(authService.currentUser() | async)?.photoURL"/>
-              </ion-avatar>
-              <ion-label>{{(authService.currentUser() | async)?.displayName}}</ion-label>
-            </ion-chip>
-          </ion-list-header>
-          <ion-note></ion-note>
+        <div class="custom-header">
+          <ion-chip>
+            <ion-avatar>
+              <img [src]="(authService.currentUser() | async)?.photoURL"/>
+            </ion-avatar>
+            <ion-label>{{(authService.currentUser() | async)?.displayName}}</ion-label>
+          </ion-chip>
+        </div>
 
+        <!-- Navigation List -->
+        <ion-list id="menu-list">
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item
               routerDirection="root"
@@ -44,7 +44,8 @@
 </ion-app>
 <ion-footer>
   <ion-toolbar>
-    <ion-buttons>
+    <ion-buttons slot="start">
+      <!-- Logout-Button nur für eingeloggte Benutzer anzeigen -->
       <ion-button *ngIf="authService.currentUser() | async" (click)="authService.logout()" color="primary">
         <ion-icon class="ion-padding-end" name="log-out"></ion-icon>
         Logout

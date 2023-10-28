@@ -28,4 +28,5 @@ export class LoginComponent {
     const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] ?? '/';
     loginProvider.loginMethod(() => this.router.navigateByUrl(returnUrl));
   };
+
 }

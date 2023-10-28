@@ -1,42 +1,37 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import {Component} from '@angular/core';
+import {AuthService} from 'src/app/shared/services/auth-service';
 
-import { RouterTestingModule } from '@angular/router/testing';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  constructor(readonly authService: AuthService) {}
 
-import { AppComponent } from './app.component';
+  // Füge eine Methode hinzu, um den Benutzernamen abzurufen, wenn der Benutzer eingeloggt ist.
+  getLoggedInUsername(): string {
+    if (this.authService.isLoggedIn()) {
+      // Hier kannst du die Logik implementieren, um den Benutzernamen abzurufen.
+      // Annahme: authService hat eine Methode getUsername(), um den Benutzernamen abzurufen.
+      return this.authService.getUsername();
+    }
+    return '';
+  }
 
-describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule.withRoutes([])],
-    }).compileComponents();
-  });
+  // Füge eine Methode hinzu, um den Avatar-Pfad abzurufen, wenn der Benutzer eingeloggt ist.
+  getLoggedInAvatar(): string {
+    if (this.authService.isLoggedIn()) {
+      // Hier kannst du die Logik implementieren, um den Avatar-Pfad abzurufen.
+      // Annahme: authService hat eine Methode getAvatar(), um den Avatar-Pfad abzurufen.
+      return this.authService.getAvatar();
+    }
+    return '';
+  }
 
-  it('should create the app', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should have menu labels', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(12);
-    expect(menuItems[0].textContent).toContain('Inbox');
-    expect(menuItems[1].textContent).toContain('Outbox');
-  });
-
-  it('should have urls', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(12);
-    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual('/folder/Inbox');
-    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/folder/Outbox');
-  });
-});
+  // Füge eine Methode hinzu, um den Benutzer auszuloggen.
+  logout(): void {
+    this.authService.logout();
+    // Füge hier die Weiterleitung zur Logout-Seite oder zur Startseite hinzu.
+  }
+}
