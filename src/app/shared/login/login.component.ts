@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AuthService} from 'src/app/shared/service/auth-service';
+import {AuthService} from 'src/app/shared/services/auth-service';
 import {ActivatedRoute, Router} from '@angular/router';
 
 interface LoginProvider {

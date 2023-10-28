@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {categoriesPath, expensesPath} from './shared/routes';
-import {AuthService} from "./shared/service/auth-service";
+import {AuthService} from "./shared/services/auth-service";
 
 @Component({
   selector: 'app-root',
