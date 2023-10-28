@@ -1,98 +1,56 @@
+<!-- ------ -->
+<!-- Header -->
+<!-- ------ -->
 <ion-header>
-  <ion-toolbar color="default">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Categories</ion-title>
   </ion-toolbar>
 </ion-header>
 
+<!-- ------- -->
+<!-- Content -->
+<!-- ------- -->
 <ion-content>
-  <ion-grid>
+  <!-- Search & sort -->
+  <ion-grid class="ion-padding">
     <ion-row>
       <ion-col size="12" size-sm="6">
         <ion-item>
-          <div class="item-native">
-            <slot name="start">
-            </slot>
-            <div class="item-inner">
-              <div class="input-wrapper">
-                <slot>
-                </slot>
-              </div>
-              <slot name="end">
-              </slot>
-              <div class="item-inner-highlight">
-              </div>
-            </div>
-            <ion-ripple-effect class="md hydrated" role="presentation">
-            </ion-ripple-effect>
-            <div class="item-highlight">
-            </div>
-          </div>
-          <ion-icon class="md hydrated" name="swap-vertical" role="img" slot="start"></ion-icon>
-          <div class="icon-inner">
-            <svg class="s-ion-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-              <path class="ion-icon-stroke-width" d="M464 208L352 96 240 208M352 113.13V416M48 304l112 112 112-112M160 398V96"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
-              </path>
-            </svg>
-          </div>
-          <ion-select class="ng-untouched ng-pristine ng-valid md in-item has-value ion-focusable select-ltr select-justify-space-between select-label-placement-start hydrated ion-untouched ion-pristine ion-valid"
-                      interface="popover">
-            <ion-select-option class="md hydrated" role="option">
-              Created at (newest first)
-            </ion-select-option>
-            <ion-select-option class="md hydrated" role="option">
-              Created at (oldest first)
-            </ion-select-option>
-            <ion-select-option class="md hydrated" role="option">
-              Name (A-Z)
-            </ion-select-option>
-            <ion-select-option class="md hydrated" role="option">
-              Name (Z-A)
-            </ion-select-option>
-            <input class="aux-input" name="ion-sel-6" type="hidden" value="name,asc">
+          <ion-icon name="swap-vertical" slot="start"></ion-icon>
+          <ion-select interface="popover" value="Name (A-Z)">
+            <ion-select-option>Created at (newest first)</ion-select-option>
+            <ion-select-option>Created at (oldest first)</ion-select-option>
+            <ion-select-option>Name (A-Z)</ion-select-option>
+            <ion-select-option>Name (Z-A)</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
-      <ion-col class="md hydrated" size="12" size-sm="6" style="flex:10">
-        <ion-item
-          class="item-has-start-slot item md item-lines-default item-fill-none hydrated ion-untouched ion-pristine ion-valid">
-          <ion-icon class="md hydrated" name="search" role="img" slot="start">
-          </ion-icon>
-          <ion-input class="ng-untouched ng-pristine ng-valid sc-ion-input-md-h sc-ion-input-md-s md input-label-placement-start in-item hydrated ion-untouched ion-pristine ion-valid" maxlength="40"
-                     placeholder="Search">
-          </ion-input>
+      <ion-col size="12" size-sm="6">
+        <ion-item>
+          <ion-icon name="search" slot="start"></ion-icon>
+          <ion-input maxlength="40" placeholder="Search" [clearInput]="true"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list class="md list-md list inset hydrated" inset="true" role="list">
-    <ion-item class="item-has-start-slot item md item-lines-default item-fill-none in-list hydrated item-label" role="listitem" style="display: flex; align-items: center;">
-      <div class="item-native">
-        <slot name="start"></slot>
-        <div class="item-inner">
-          <div class="input-wrapper">
-            <slot>
-              <ion-label></ion-label>
-            </slot>
-          </div>
-          <slot name="end"></slot>
-          <div class="item-inner-highlight"></div>
-        </div>
-        <div class="item-highlight"></div>
 
-      </div>
-      <ion-icon class="md hydrated" slot="start" role="img" name="alert-circle-outline" size="large">
-      </ion-icon>
-      <ion-label class="sc-ion-label-md-s md hydrated">
-        No Categories found.
-      </ion-label>
+  <!-- Category list -->
+  <ion-list inset="true">
+
+    <!-- Categories -->
+    <ion-item button="true" [detail]="true" (click)="openModal()">
+      <ion-label>Auswärts Essen</ion-label>
     </ion-item>
+
   </ion-list>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button class="md hydrated" (click)="openModal()">
-      <ion-icon name="add" role="img"></ion-icon>
+  <!-- Create fab button -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openModal()">
+      <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
