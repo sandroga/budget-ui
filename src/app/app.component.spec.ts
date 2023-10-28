@@ -1,37 +1,51 @@
-import {Component} from '@angular/core';
-import {AuthService} from 'src/app/shared/services/auth-service';
+import {Injectable} from '@angular/core';
+import {from, Observable} from 'rxjs';
+import firebase from 'firebase/compat/app';
+import {ToastController} from '@ionic/angular';
+import {AngularFireAuth} from '@angular/fire/compat/auth';
+import {Router} from '@angular/router';
+import {loginPath} from 'src/app/shared/routes';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  constructor(readonly authService: AuthService) {}
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  constructor(
+    private readonly fireauth: AngularFireAuth,
+    private readonly toast: ToastController,
+    private readonly router: Router,
+  ) {}
 
-  // Füge eine Methode hinzu, um den Benutzernamen abzurufen, wenn der Benutzer eingeloggt ist.
-  getLoggedInUsername(): string {
-    if (this.authService.isLoggedIn()) {
-      // Hier kannst du die Logik implementieren, um den Benutzernamen abzurufen.
-      // Annahme: authService hat eine Methode getUsername(), um den Benutzernamen abzurufen.
-      return this.authService.getUsername();
-    }
-    return '';
-  }
+  currentUser = (): Observable<firebase.User | null> => this.fireauth.user;
 
-  // Füge eine Methode hinzu, um den Avatar-Pfad abzurufen, wenn der Benutzer eingeloggt ist.
-  getLoggedInAvatar(): string {
-    if (this.authService.isLoggedIn()) {
-      // Hier kannst du die Logik implementieren, um den Avatar-Pfad abzurufen.
-      // Annahme: authService hat eine Methode getAvatar(), um den Avatar-Pfad abzurufen.
-      return this.authService.getAvatar();
-    }
-    return '';
-  }
+  loginWithGithub = (next?: () => void): void => this.login(new firebase.auth.GithubAuthProvider(), next);
 
-  // Füge eine Methode hinzu, um den Benutzer auszuloggen.
-  logout(): void {
-    this.authService.logout();
-    // Füge hier die Weiterleitung zur Logout-Seite oder zur Startseite hinzu.
-  }
+  loginWithGoogle = (next?: () => void): void => this.login(new firebase.auth.GoogleAuthProvider(), next);
+
+  logout = (): void => {
+    this.fireauth.signOut();
+    this.router.navigate([loginPath]);
+  };
+
+  // --------------
+  // Helper methods
+  // --------------
+
+  private displayLoginError = (error: firebase.auth.Error): void => {
+    console.error(error);
+    this.toast
+      .create({
+        message: error.message,
+        duration: 5000,
+        position: 'bottom',
+        color: 'danger',
+        icon: 'alert-circle',
+      })
+      .then((toast) => toast.present());
+  };
+
+  private login = (authProvider: firebase.auth.AuthProvider, next?: () => void): void => {
+    from(this.fireauth.signInWithPopup(authProvider)).subscribe({
+      next: next || (() => {}),
+      error: (error) => this.displayLoginError(error),
+    });
+  };
 }
