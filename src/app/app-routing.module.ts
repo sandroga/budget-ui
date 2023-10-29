@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {categoriesPath, defaultPath, expensesPath, loginPath} from './shared/routes';
 import {LoginComponent} from "./shared/login/login.component";
-import {AuthGuard} from './guard/auth.guard'; // Stellen Sie sicher, dass dies der richtige Pfad zu Ihrem AuthGuard ist
+import {AuthGuard} from './shared/guard/auth.guard'; // Stellen Sie sicher, dass dies der richtige Pfad zu Ihrem AuthGuard ist
 
 const routes: Routes = [
   {
