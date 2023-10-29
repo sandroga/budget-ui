@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {ActionSheetService} from '../../shared/services/action-sheet.service';
+import {ActionSheetService} from '../../shared/service/action-sheet.service';
 import {filter, finalize, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CategoryService} from "../category.service";
-import {ToastService} from "../../shared/services/toast.service";
+import {ToastService} from "../../shared/service/toast.service";
 
 @Component({
   selector: 'app-category-modal',

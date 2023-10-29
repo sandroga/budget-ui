@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {filter, from} from 'rxjs';
 import {CategoryModalComponent} from '../../category/category-modal/category-modal.component';
-import {ActionSheetService} from '../../shared/services/action-sheet.service';
+import {ActionSheetService} from '../../shared/service/action-sheet.service';
 
 @Component({
   selector: 'app-expense-modal',
