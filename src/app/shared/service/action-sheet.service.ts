@@ -6,7 +6,6 @@ import {ActionSheetController} from '@ionic/angular';
 })
 export class ActionSheetService {
   constructor(private readonly actionSheetCtrl: ActionSheetController) {}
-
   async showDeletionConfirmation(message: string): Promise<string> {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Confirm Deletion',
