@@ -3,7 +3,7 @@ import {ModalController} from '@ionic/angular';
 import {ActionSheetService} from '../../shared/services/action-sheet.service';
 import {filter, finalize, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {CategoryService} from "../../shared/services/category.service";
+import {CategoryService} from "../category.service";
 import {ToastService} from "../../shared/services/toast.service";
 
 @Component({

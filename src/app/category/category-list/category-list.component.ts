@@ -2,13 +2,13 @@ import {Component} from '@angular/core';
 import {CategoryModalComponent} from '../category-modal/category-modal.component';
 import {InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent} from '@ionic/angular';
 import {Category, CategoryCriteria} from '../../shared/domain';
-import {CategoryService} from "src/app/shared/services/category.service";
+import {CategoryService} from "src/app/category/category.service";
 import {ToastService} from "src/app/shared/services/toast.service";
 import {finalize} from "rxjs";
 
 @Component({
   selector: 'app-category-list',
-  templateUrl: './category-list.component.html',
+  templateUrl: 'src/app/category/category-list/category-list.component.html',
 })
 export class CategoryListComponent {
   categories: Category[] | null = null;
