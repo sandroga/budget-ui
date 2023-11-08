@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CategoryModalComponent } from '../category-modal/category-modal.component';
 import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
 import { Category, CategoryCriteria, SortOption } from '../../shared/domain';
-import { ToastService } from '../../shared/service/toast.service';
 import { CategoryService } from '../category.service';
+import { ToastService } from '../../shared/service/toast.service';
 import { debounce, finalize, interval, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -39,13 +39,6 @@ export class CategoryListComponent {
         this.loadCategories();
       });
   }
-  async openModal(category?: Category): Promise<void> {
-    const modal = await this.modalCtrl.create({ component: CategoryModalComponent });
-    modal.present();
-    const { role } = await modal.onWillDismiss();
-    if (role === 'refresh') this.reloadCategories();
-    console.log('role', role);
-  }
   private loadCategories(next: () => void = () => {}): void {
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
     this.loading = true;
@@ -66,15 +59,27 @@ export class CategoryListComponent {
         error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
       });
   }
+  async openModal(category?: Category): Promise<void> {
+    const modal = await this.modalCtrl.create({
+      component: CategoryModalComponent,
+      componentProps: { category: category ? { ...category } : {} },
+    });
+    modal.present();
+    const { role } = await modal.onWillDismiss();
+    if (role === 'refresh') this.reloadCategories();
+  }
+  ionViewDidEnter(): void {
+    this.loadCategories();
+    this.searchFormSubscription.unsubscribe();
+  }
   loadNextCategoryPage($event: any) {
     this.searchCriteria.page++;
     this.loadCategories(() => ($event as InfiniteScrollCustomEvent).target.complete());
+    this.searchCriteria.page = 0;
+    this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
   }
   reloadCategories($event?: any): void {
     this.searchCriteria.page = 0;
     this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
-  }
-  ionViewDidLeave(): void {
-    this.searchFormSubscription.unsubscribe();
   }
 }
