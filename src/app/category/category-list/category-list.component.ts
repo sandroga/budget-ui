@@ -1,10 +1,10 @@
-import {Component} from '@angular/core';
-import {CategoryModalComponent} from '../category-modal/category-modal.component';
-import {InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent} from '@ionic/angular';
-import {Category, CategoryCriteria} from '../../shared/domain';
-import {ToastService} from "../../shared/service/toast.service";
-import {CategoryService} from "../category.service";
-import {finalize} from "rxjs";
+import { Component } from '@angular/core';
+import { CategoryModalComponent } from '../category-modal/category-modal.component';
+import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
+import { Category, CategoryCriteria } from '../../shared/domain';
+import { ToastService } from '../../shared/service/toast.service';
+import { CategoryService } from '../category.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-category-list',
@@ -16,6 +16,14 @@ export class CategoryListComponent {
   lastPageReached = false;
   loading = false;
   searchCriteria: CategoryCriteria = { page: 0, size: 25, sort: this.initialSort };
+  readonly searchForm: FormGroup;
+  readonly sortOptions: SortOption[] = [
+    { label: 'Created at (newest first)', value: 'createdAt,desc' },
+    { label: 'Created at (oldest first)', value: 'createdAt,asc' },
+    { label: 'Name (A-Z)', value: 'name,asc' },
+    { label: 'Name (Z-A)', value: 'name,desc' },
+  ];
+  private readonly searchFormSubscription: Subscription;
   constructor(
       private readonly modalCtrl: ModalController,
       private readonly categoryService: CategoryService,
