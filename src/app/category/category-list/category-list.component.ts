@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CategoryModalComponent } from '../category-modal/category-modal.component';
 import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
-import { Category, CategoryCriteria } from '../../shared/domain';
+import { Category, CategoryCriteria, SortOption } from '../../shared/domain';
 import { ToastService } from '../../shared/service/toast.service';
 import { CategoryService } from '../category.service';
-import { finalize } from 'rxjs';
+import { debounce, finalize, interval, Subscription } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-category-list',
@@ -25,10 +26,19 @@ export class CategoryListComponent {
   ];
   private readonly searchFormSubscription: Subscription;
   constructor(
-      private readonly modalCtrl: ModalController,
-      private readonly categoryService: CategoryService,
-      private readonly toastService: ToastService
-  ) { }
+    private readonly modalCtrl: ModalController,
+    private readonly categoryService: CategoryService,
+    private readonly toastService: ToastService,
+    private readonly formBuilder: FormBuilder,
+  ) {
+    this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
+    this.searchFormSubscription = this.searchForm.valueChanges
+      .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
+      .subscribe((value) => {
+        this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
+        this.loadCategories();
+      });
+  }
   async openModal(category?: Category): Promise<void> {
     const modal = await this.modalCtrl.create({ component: CategoryModalComponent });
     modal.present();
@@ -40,21 +50,21 @@ export class CategoryListComponent {
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
     this.loading = true;
     this.categoryService
-        .getCategories(this.searchCriteria)
-        .pipe(
-            finalize(() => {
-              this.loading = false;
-              next();
-            }),
-        )
-        .subscribe({
-          next: (categories) => {
-            if (this.searchCriteria.page === 0 || !this.categories) this.categories = [];
-            this.categories.push(...categories.content);
-            this.lastPageReached = categories.last;
-          },
-          error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
-        });
+      .getCategories(this.searchCriteria)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          next();
+        }),
+      )
+      .subscribe({
+        next: (categories) => {
+          if (this.searchCriteria.page === 0 || !this.categories) this.categories = [];
+          this.categories.push(...categories.content);
+          this.lastPageReached = categories.last;
+        },
+        error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
+      });
   }
   loadNextCategoryPage($event: any) {
     this.searchCriteria.page++;
@@ -64,7 +74,7 @@ export class CategoryListComponent {
     this.searchCriteria.page = 0;
     this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
   }
-  ionViewDidEnter(): void {
-    this.loadCategories();
+  ionViewDidLeave(): void {
+    this.searchFormSubscription.unsubscribe();
   }
 }
