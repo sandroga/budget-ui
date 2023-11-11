@@ -7,7 +7,7 @@ import { ToastService } from '../../shared/service/toast.service';
 import { CategoryService } from '../category.service';
 import { Category } from '../../shared/domain';
 
-[CategoryService]
+[CategoryService];
 
 @Component({
   selector: 'app-category-modal',
@@ -16,6 +16,7 @@ import { Category } from '../../shared/domain';
 export class CategoryModalComponent {
   readonly categoryForm: FormGroup;
   submitting = false;
+  // Passed into the component by the ModalController, available in the ionViewWillEnter
   category: Category = {} as Category;
   constructor(
       private readonly actionSheetService: ActionSheetService,
@@ -27,6 +28,9 @@ export class CategoryModalComponent {
     this.categoryForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(40)]],
     });
+  }
+  ionViewWillEnter(): void {
+    this.categoryForm.patchValue(this.category);
   }
   cancel(): void {
     this.modalCtrl.dismiss(null, 'cancel');
