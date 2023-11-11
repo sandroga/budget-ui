@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {ActionSheetService} from '../../shared/service/action-sheet.service';
-import {filter, finalize, from} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ToastService} from "../../shared/service/toast.service";
-import {CategoryService} from "../category.service";
+import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { ActionSheetService } from '../../shared/service/action-sheet.service';
+import { filter, finalize, from } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastService } from '../../shared/service/toast.service';
+import { CategoryService } from '../category.service';
+import { Category } from '../../shared/domain';
 
 [CategoryService]
 
@@ -15,6 +16,7 @@ import {CategoryService} from "../category.service";
 export class CategoryModalComponent {
   readonly categoryForm: FormGroup;
   submitting = false;
+  category: Category = {} as Category;
   constructor(
       private readonly actionSheetService: ActionSheetService,
       private readonly categoryService: CategoryService,
