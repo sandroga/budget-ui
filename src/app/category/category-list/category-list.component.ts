@@ -70,6 +70,8 @@ export class CategoryListComponent {
   }
   ionViewDidEnter(): void {
     this.loadCategories();
+  }
+  ionViewDidLeave(): void {
     this.searchFormSubscription.unsubscribe();
   }
   loadNextCategoryPage($event: any) {
