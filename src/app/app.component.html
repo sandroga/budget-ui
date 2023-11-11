@@ -5,6 +5,7 @@
       <!-- Benutzerdefinierter Header -->
       <ion-content>
         <div class="custom-header">
+          <ion-label class="label-with-margin">Budget UI</ion-label>
           <ion-chip>
             <ion-avatar>
               <img [src]="(authService.currentUser() | async)?.photoURL"/>
@@ -12,7 +13,6 @@
             <ion-label>{{(authService.currentUser() | async)?.displayName}}</ion-label>
           </ion-chip>
         </div>
-
         <!-- Navigation List -->
         <ion-list id="menu-list">
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">

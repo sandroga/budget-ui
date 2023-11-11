@@ -117,3 +117,7 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+
+.label-with-margin {
+  margin-right: 360px; //* oder die gewünschte Abstandgröße *//
+}
