@@ -11,7 +11,7 @@
             <ion-ripple-effect>
             </ion-ripple-effect>
           <ion-icon name="swap-vertical" role="img" slot="start"></ion-icon>
-            <ion-select interface="popover">
+            <ion-select interface="popover" placeholder="Created at (newest first)">
               <ion-select-option role="option">
               Created at (newest first)
               </ion-select-option>
@@ -35,8 +35,6 @@
       </ion-col>
       <ion-col size="9" size-sm="4">
         <ion-item>
-            <ion-ripple-effect>
-            </ion-ripple-effect>
           <ion-icon class="md hydrated" name="swap-vertical" role="img" slot="start"></ion-icon>
           <ion-select interface="popover" placeholder="Categories">
             <ion-select-option></ion-select-option>
@@ -68,3 +66,19 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot='start'>
+      <ion-button type='button' (click)='addMonths(-1)'>
+        <ion-icon slot='icon-only' name='arrow-back-outline'></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ date | date:'MMMM yyyy' }}
+    </ion-title>
+    <ion-buttons slot='end'>
+      <ion-button type='button' (click)='addMonths(1)'>
+        <ion-icon slot='icon-only' name='arrow-forward-outline'></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
