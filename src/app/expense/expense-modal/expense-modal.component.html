@@ -1,1 +1,56 @@
-Expense Modal
+<!-- Header -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot='start' (click)='cancel()'>
+      <ion-button type='button' color='default'>
+        <ion-icon slot='start' name="close-circle-outline"></ion-icon>
+        Abbrechen
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <ng-template>Expense hinzufügen</ng-template>
+    </ion-title>
+    <ion-buttons slot='end'>
+      <ion-button type='button' color='default' (click)='save()'>
+        <ion-icon slot='start' name='save-outline'></ion-icon>
+        Speichern
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<!-- Content -->
+<ion-content>
+  <ion-item>
+    <ion-icon slot='start' name='text'></ion-icon>
+    <ion-input placeholder="Geben Sie den Namen der Ausgaben ein"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-icon slot='start' name='pricetag'></ion-icon>
+    <ion-select interface='popover'  placeholder='Wähle eine Kategorie'>
+      <ion-select-option role='option'>
+      </ion-select-option>
+    </ion-select>
+    <ion-button color="danger" slot='end' (click)='showCategoryModal()' >
+      <ion-icon slot='icon-only' name='add'></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item>
+    <ion-icon slot='start' name='cash-outline'></ion-icon>
+    <ion-input type='number' inputmode='decimal' placeholder="Betrag in CHF eingeben"></ion-input>
+    <ion-note slot='end'>CHF</ion-note>
+  </ion-item>
+  <ion-item>
+    <ion-icon slot='start' name="calendar-number-outline"></ion-icon>
+    <ion-datetime-button datetime='datetime'></ion-datetime-button>
+    <ion-modal [keepContentsMounted]='true'>
+      <ng-template>
+        <ion-datetime color="primary" presentation='date-time' id='datetime' formControlName='date'> <span slot="title">Wählen Sie das Ausgabedatum aus</span> </ion-datetime>
+      </ng-template>
+    </ion-modal>
+  </ion-item>
+  <ion-fab slot='fixed' vertical='bottom' horizontal='end'>
+    <ion-fab-button (click)='delete()' color='danger'>
+      <ion-icon name='trash-outline'></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
