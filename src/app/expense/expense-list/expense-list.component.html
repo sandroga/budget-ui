@@ -1,10 +1,17 @@
+
+<!---Header--->
+
 <ion-header>
   <ion-toolbar color="default">
     <ion-title>Expenses</ion-title>
   </ion-toolbar>
 </ion-header>
+
+<!---Content--->
+
+
 <ion-content>
-  <ion-grid>
+  <ion-grid [formGroup]='searchForm'>
     <ion-row>
       <ion-col size="9" size-sm="4">
         <ion-item>
@@ -51,7 +58,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list inset="true" role="list">
+  <ion-list [ngSwitch]='expenseGroups?.length' inset="true" role="list">
     <ion-item>
         <ion-label>
           No Expenses found
