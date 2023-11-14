@@ -14,10 +14,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class CategoryListComponent {
   categories: Category[] | null = null;
   readonly initialSort = 'name,asc';
+  readonly searchForm: FormGroup;
   lastPageReached = false;
   loading = false;
   searchCriteria: CategoryCriteria = { page: 0, size: 25, sort: this.initialSort };
-  readonly searchForm: FormGroup;
   readonly sortOptions: SortOption[] = [
     { label: 'Created at (newest first)', value: 'createdAt,desc' },
     { label: 'Created at (oldest first)', value: 'createdAt,asc' },
@@ -25,6 +25,7 @@ export class CategoryListComponent {
     { label: 'Name (Z-A)', value: 'name,desc' },
   ];
   private readonly searchFormSubscription: Subscription;
+
   constructor(
     private readonly modalCtrl: ModalController,
     private readonly categoryService: CategoryService,
@@ -32,12 +33,14 @@ export class CategoryListComponent {
     private readonly formBuilder: FormBuilder,
   ) {
     this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
-    this.searchFormSubscription = this.searchForm.valueChanges
-      .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
-      .subscribe((value) => {
-        this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
-        this.loadCategories();
-      });
+    {
+      this.searchFormSubscription = this.searchForm.valueChanges
+        .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
+        .subscribe((value) => {
+          this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
+          this.loadCategories();
+        });
+    }
   }
   private loadCategories(next: () => void = () => {}): void {
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
@@ -70,13 +73,13 @@ export class CategoryListComponent {
   }
   ionViewDidEnter(): void {
     this.loadCategories();
+  }
+  ionViewDidLeave(): void {
     this.searchFormSubscription.unsubscribe();
   }
   loadNextCategoryPage($event: any) {
     this.searchCriteria.page++;
     this.loadCategories(() => ($event as InfiniteScrollCustomEvent).target.complete());
-    this.searchCriteria.page = 0;
-    this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
   }
   reloadCategories($event?: any): void {
     this.searchCriteria.page = 0;
