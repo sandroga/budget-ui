@@ -1,21 +1,27 @@
-import {Component} from '@angular/core';
-import {InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent} from '@ionic/angular';
-import {ExpenseModalComponent} from '../expense-modal/expense-modal.component';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {debounce, interval} from "rxjs";
-import {Expense, ExpenseCriteria, SortOption} from "../../shared/domain";
-import {ExpenseService} from "../expense.service";
-import {ToastService} from "../../shared/service/toast.service";
-import {addMonths, format} from 'date-fns'; // Importieren von addMonths und format
+import { Component } from '@angular/core';
+import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
+import { ExpenseModalComponent } from '../expense-modal/expense-modal.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { debounce, interval } from 'rxjs';
+import { Expense, ExpenseCriteria, SortOption } from '../../shared/domain';
+import { ExpenseService } from '../expense.service';
+import { ToastService } from '../../shared/service/toast.service';
+import { addMonths, format } from 'date-fns';
+import { CategoryService } from '../../category/category.service'; // Importieren von addMonths und format
+
+interface ExpenseGroup {
+  date: string;
+  expenses: Expense[];
+}
 
 @Component({
   selector: 'app-expense-overview',
   templateUrl: './expense-list.component.html',
 })
 export class ExpenseListComponent {
-  expenseGroups: any[] | undefined;
+  expenseGroups: ExpenseGroup[] | null = null;
   loading = false;
-  expenses: Expense[] = [];
+  expenses: Expense[] | null = null;
   lastPageReached = false;
   searchCriteria: ExpenseCriteria = { page: 0, size: 25, sort: 'name,asc' };
   date = new Date(); // Aktuelles Datum
@@ -33,6 +39,7 @@ export class ExpenseListComponent {
     private readonly formBuilder: FormBuilder,
     private readonly expenseService: ExpenseService,
     private readonly toastService: ToastService,
+    private readonly categoryService: CategoryService,
   ) {
     this.searchForm = this.formBuilder.group({ name: [], sort: ['name,asc'] });
     this.searchForm.valueChanges
