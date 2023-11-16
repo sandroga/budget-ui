@@ -3,8 +3,10 @@ import { filter, finalize, from } from 'rxjs';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
 import { ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CategoryService } from '../../category/category.service';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
+import { Category } from '../../shared/domain';
 
 @Component({
   selector: 'app-expense-modal',
@@ -14,12 +16,15 @@ export class ExpenseModalComponent {
   readonly expenseForm: FormGroup;
   submitting = false;
 
+  categories: Category[] = [];
+
   constructor(
     private readonly actionSheetService: ActionSheetService,
     private readonly expenseService: ExpenseService,
     private readonly formBuilder: FormBuilder,
     private readonly modalCtrl: ModalController,
     private readonly toastService: ToastService,
+    private readonly categoryService: CategoryService,
   ) {
     this.expenseForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(40)]],
@@ -55,5 +60,15 @@ export class ExpenseModalComponent {
     await expenseModal.present();
     const { role } = await expenseModal.onWillDismiss();
     console.log('role', role);
+  }
+  private loadAllCategories(): void {
+    this.categoryService.getAllCategories({ sort: 'name,asc' }).subscribe({
+      complete(): void {},
+      next: (categories: Category[]) => (this.categories = categories),
+      error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
+    });
+  }
+  ionViewWillEnter(): void {
+    this.loadAllCategories();
   }
 }

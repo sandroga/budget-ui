@@ -1,37 +1,25 @@
+<!-- Header -->
 <ion-header>
   <ion-toolbar color="default">
     <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
     <ion-title>Expenses</ion-title>
   </ion-toolbar>
 </ion-header>
+
+<!-- Content -->
 <ion-content>
-  <ion-grid>
+
+  <!-- Search & Sort -->
+  <ion-grid class="ion-padding" [formGroup]="searchForm">
     <ion-row>
       <ion-col size="9" size-sm="4">
         <ion-item>
-            <ion-ripple-effect>
-            </ion-ripple-effect>
-          <ion-icon name="swap-vertical" role="img" slot="start"></ion-icon>
-            <ion-select interface="popover" placeholder="Created at (newest first)">
-              <ion-select-option role="option">
-              Created at (newest first)
-              </ion-select-option>
-              <ion-select-option role="option">
-              Created at (oldest first)
-              </ion-select-option>
-              <ion-select-option role="option">
-              Date (newest first)
-              </ion-select-option>
-              <ion-select-option role="option">
-              Date (oldest first)
-              </ion-select-option>
-              <ion-select-option role="option">
-              Name (A-Z)
-              </ion-select-option>
-              <ion-select-option role="option">
-              Name (Z-A)
-              </ion-select-option>
-            </ion-select>
+          <ion-icon name="swap-vertical" slot="start"></ion-icon>
+          <ion-select interface="popover" formControlName="sort">
+            <ion-select-option *ngFor="let sortOption of sortOptions" [value]="sortOption.value">
+              {{sortOption.label}}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
       </ion-col>
       <ion-col size="9" size-sm="4">
@@ -42,12 +30,10 @@
           </ion-select>
         </ion-item>
       </ion-col>
-      <ion-col size="9" size-sm="4" style="flex:10">
+      <ion-col size="9" size-sm="4">
         <ion-item>
-          <ion-icon name="search" role="img" slot="start">
-          </ion-icon>
-          <ion-input placeholder="Search">
-          </ion-input>
+          <ion-icon name="search" slot="start"></ion-icon>
+          <ion-input maxlength="40" placeholder="Search" [clearInput]="true" formControlName="name"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -62,6 +48,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="reloadExpenses($event)" [disabled]="loading">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+
 
   <!-- Category List -->
   <ion-list [ngSwitch]="expenses?.length" inset="true">

@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { addMonths, set } from 'date-fns';
 import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
 import { ExpenseModalComponent } from '../expense-modal/expense-modal.component';
-import { Expense, ExpenseCriteria } from '../../shared/domain';
+import { Expense, ExpenseCriteria, SortOption } from '../../shared/domain';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
-import { finalize } from 'rxjs';
+import { debounce, finalize, interval, Subscription } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-expense-overview',
@@ -18,12 +19,29 @@ export class ExpenseListComponent {
   lastPageReached = false;
   loading = false;
   searchCriteria: ExpenseCriteria = { page: 0, size: 25, sort: this.initialSort };
+  readonly searchForm: FormGroup;
+  readonly sortOptions: SortOption[] = [
+    { label: 'Created at (newest first)', value: 'createdAt,desc' },
+    { label: 'Created at (oldest first)', value: 'createdAt,asc' },
+    { label: 'Name (A-Z)', value: 'name,asc' },
+    { label: 'Name (Z-A)', value: 'name,desc' },
+  ];
+  private readonly searchFormSubscription: Subscription;
 
   constructor(
     private readonly modalCtrl: ModalController,
     private readonly expenseService: ExpenseService,
     private readonly toastService: ToastService,
-  ) {}
+    private readonly formBuilder: FormBuilder,
+  ) {
+    this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
+    this.searchFormSubscription = this.searchForm.valueChanges
+      .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
+      .subscribe((value) => {
+        this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
+        this.loadExpenses();
+      });
+  }
   addMonths = (number: number): void => {
     this.date = addMonths(this.date, number);
   };
@@ -69,5 +87,8 @@ export class ExpenseListComponent {
   reloadExpenses($event?: any): void {
     this.searchCriteria.page = 0;
     this.loadExpenses(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
+  }
+  ionViewDidLeave(): void {
+    this.searchFormSubscription.unsubscribe();
   }
 }
