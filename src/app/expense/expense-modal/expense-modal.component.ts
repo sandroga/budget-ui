@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { filter, finalize, from } from 'rxjs';
+import { filter, from } from 'rxjs';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
 import { ModalController } from '@ionic/angular';
 import { CategoryModalComponent } from '../../category/category-modal/category-modal.component';
@@ -8,7 +8,7 @@ import { CategoryService } from '../../category/category.service';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
 import { Category, Expense } from '../../shared/domain';
-import { formatISO } from 'date-fns';
+import { formatISO, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-expense-modal',
@@ -37,6 +37,7 @@ export class ExpenseModalComponent implements OnInit {
     private readonly categoryService: CategoryService,
   ) {
     this.expenseForm = this.formBuilder.group({
+      categoryId: [],
       name: ['', [Validators.required, Validators.maxLength(40)]],
       amount: [],
       date: [formatISO(new Date())],
@@ -46,8 +47,10 @@ export class ExpenseModalComponent implements OnInit {
   save(): void {
     this.submitting = true;
     this.expenseService
-      .upsertExpense(this.expenseForm.value)
-      .pipe(finalize(() => (this.submitting = false)))
+      .upsertExpense({
+        ...this.expenseForm.value,
+        date: formatISO(parseISO(this.expenseForm.value.date), { representation: 'date' }),
+      })
       .subscribe({
         next: () => {
           this.toastService.displaySuccessToast('Expense saved');
@@ -76,8 +79,7 @@ export class ExpenseModalComponent implements OnInit {
   }
   private loadAllCategories(): void {
     this.categoryService.getAllCategories({ sort: 'name,asc' }).subscribe({
-      complete(): void {},
-      next: (categories: Category[]) => (this.categories = categories),
+      next: (categories) => (this.categories = categories),
       error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
     });
   }

@@ -10,6 +10,8 @@
       <ng-template>Expense hinzufügen</ng-template>
     </ion-buttons>
     <ion-title>
+      <div *ngIf="expense.id; else elseBlock">Edit Expense</div>
+      <ng-template #elseBlock>Add Expense</ng-template>
     </ion-title>
     <ion-buttons slot='end'>
       <ion-button (click)="save()" [disabled]="expenseForm.pristine || expenseForm.invalid || submitting">
@@ -23,13 +25,7 @@
 <ion-content class="ion-padding" [formGroup]="expenseForm">
   <ion-item>
     <ion-icon name="text" slot="start"></ion-icon>
-    <ion-input
-      [disabled]="submitting"
-      formControlName="name"
-      maxlength="40"
-      placeholder="Enter the expenses name"
-      required="true"
-    ></ion-input>
+    <ion-input placeholder="Enter the expense's name" formControlName='name' [disabled]='submitting'></ion-input>
   </ion-item>
   <ion-item>
     <ion-icon slot='start' name='pricetag'></ion-icon>
@@ -43,18 +39,19 @@
   </ion-item>
   <ion-item>
     <ion-icon slot='start' name='cash-outline'></ion-icon>
-    <ion-input type='number' inputmode='decimal' placeholder="Betrag in CHF eingeben"></ion-input>
+    <ion-input type='number' inputmode='decimal' placeholder="Enter the amount in CHF" step="0.10" formControlName="amount"></ion-input>
     <ion-note slot='end'>CHF</ion-note>
   </ion-item>
   <ion-item>
     <ion-icon slot='start' name="calendar-number-outline"></ion-icon>
     <ion-datetime-button datetime='datetime'></ion-datetime-button>
-    <ion-modal [keepContentsMounted]='true'>
+    <ion-modal>
       <ng-template>
-        <ion-datetime color="primary" presentation='date-time' id='datetime' formControlName='date'> <span slot="title">Wählen Sie das Ausgabedatum aus</span> </ion-datetime>
+        <ion-datetime color="primary" presentation='date' id='datetime' formControlName='date'> <span slot="title">Select the purchase date</span> </ion-datetime>
       </ng-template>
     </ion-modal>
   </ion-item>
+
   <ion-fab slot='fixed' vertical='bottom' horizontal='end'>
     <ion-fab-button (click)='delete()' color='danger'>
       <ion-icon name='trash-outline'></ion-icon>
