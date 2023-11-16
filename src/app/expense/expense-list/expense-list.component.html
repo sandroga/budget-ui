@@ -1,41 +1,49 @@
-
-<!---Header--->
-
 <ion-header>
-  <ion-toolbar>
-    <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+  <ion-toolbar color="default">
     <ion-title>Expenses</ion-title>
   </ion-toolbar>
 </ion-header>
-
-<!---Content--->
-
 <ion-content>
-  <ion-grid class="ion-padding" [formGroup]='searchForm'>
+  <ion-grid>
     <ion-row>
       <ion-col size="9" size-sm="4">
         <ion-item>
+            <ion-ripple-effect>
+            </ion-ripple-effect>
           <ion-icon name="swap-vertical" role="img" slot="start"></ion-icon>
-          <ion-select interface="popover" formControlName="sort">
-            <ion-select-option *ngFor="let sortOption of sortOptions" [value]="sortOption.value">
-              {{sortOption.label}}
-            </ion-select-option>
-          </ion-select>
+            <ion-select interface="popover" placeholder="Created at (newest first)">
+              <ion-select-option role="option">
+              Created at (newest first)
+              </ion-select-option>
+              <ion-select-option role="option">
+              Created at (oldest first)
+              </ion-select-option>
+              <ion-select-option role="option">
+              Date (newest first)
+              </ion-select-option>
+              <ion-select-option role="option">
+              Date (oldest first)
+              </ion-select-option>
+              <ion-select-option role="option">
+              Name (A-Z)
+              </ion-select-option>
+              <ion-select-option role="option">
+              Name (Z-A)
+              </ion-select-option>
+            </ion-select>
         </ion-item>
       </ion-col>
       <ion-col size="9" size-sm="4">
         <ion-item>
-          <ion-icon name="pricetag" slot="start"></ion-icon>
-          <ion-select interface="popover" formControlName="name">
-            <ion-select-option *ngFor="let sortOption of sortOptions">
-              {{sortOption.label}}
-            </ion-select-option>
+          <ion-icon class="md hydrated" name="swap-vertical" role="img" slot="start"></ion-icon>
+          <ion-select interface="popover" placeholder="Categories">
+            <ion-select-option></ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
       <ion-col size="9" size-sm="4" style="flex:10">
         <ion-item>
-          <ion-icon name="search" role="img" slot="end">
+          <ion-icon name="search" role="img" slot="start">
           </ion-icon>
           <ion-input placeholder="Search">
           </ion-input>
@@ -43,62 +51,23 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <!-- Category List -->
-  <ion-list [ngSwitch]="expenses?.length" inset="true">
-
-    <!-- Skeleton -->
-    <ng-container *ngSwitchCase="null">
-      <ion-item *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+  <ion-list inset="true" role="list">
+    <ion-item>
         <ion-label>
-          <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+          No Expenses found
         </ion-label>
-      </ion-item>
-    </ng-container>
-
-    <!-- Empty List -->
-    <ion-item *ngSwitchCase="0">
-      <ion-icon slot="start" name="alert-circle-outline"></ion-icon>
-      <ion-label> No expenses found </ion-label>
+        <ion-icon slot="start" size="large" name="alert-circle-outline">
+        </ion-icon>
     </ion-item>
-
-    <!-- Expenses -->
-    <ng-container *ngSwitchDefault>
-      <ion-item
-        button="true"
-        *ngFor="let category of expenses"
-        [detail]="true"
-        [disabled]="loading"
-        (click)="openModal(Expense)">
-        <ion-label> {{category.name}} </ion-label>
-      </ion-item>
-    </ng-container>
   </ion-list>
-
-  <ion-content>
-    <!-- Infinite Scroll -->
-    <ion-infinite-scroll [disabled]="lastPageReached || loading" (ionInfinite)="loadNextExpensesPage($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ion-content>
-  <ion-content>
-    <!-- Refresher -->
-    <ion-refresher slot="fixed" (ionRefresh)="reloadExpenses($event)" [disabled]="loading">
-      <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-  </ion-content>
-
   <!--ion-Fab Button-->
-
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="primary" (click)="openModal()">
       <ion-icon name="add" role="img"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-
 <!-- footer -->
-
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot='start'>

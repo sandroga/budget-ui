@@ -1,54 +1,49 @@
-
 <!-- Header -->
-
 <ion-header>
   <ion-toolbar>
+    <ion-progress-bar *ngIf="submitting" type="indeterminate"></ion-progress-bar>
     <ion-buttons slot='start' (click)='cancel()'>
-      <ion-button type='button' color='default'>
+      <ion-button color="medium" (click)="cancel()" [disabled]="submitting">
         <ion-icon slot='start' name="close-circle-outline"></ion-icon>
-        Abbrechen
+        Cancel
       </ion-button>
+      <ng-template>Expense hinzufügen</ng-template>
     </ion-buttons>
     <ion-title>
-      <div *ngIf="expense.id; else elseBlock">Ausgabe bearbeiten</div>
-      <ng-template #elseBlock>Expense hinzufügen</ng-template>
     </ion-title>
     <ion-buttons slot='end'>
-      <ion-button type='button' color='default' (click)='save()'
-        [disabled]='expenseForm.pristine || expenseForm.invalid || submitting'>
+      <ion-button (click)="save()" [disabled]="expenseForm.pristine || expenseForm.invalid || submitting">
         <ion-icon slot='start' name='save-outline'></ion-icon>
-        Speichern
+        Save
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <!-- Content -->
-
-<ion-content [formGroup]='expenseForm'>
+<ion-content class="ion-padding" [formGroup]="expenseForm">
   <ion-item>
-    <ion-icon slot='start' name='text'></ion-icon>
-    <ion-input placeholder="Ausgabe Bezeichnung eingeben" formControlName='name' [disabled]='submitting'></ion-input>
+    <ion-icon name="text" slot="start"></ion-icon>
+    <ion-input
+      [disabled]="submitting"
+      formControlName="name"
+      maxlength="40"
+      placeholder="Enter the expenses name"
+      required="true"
+    ></ion-input>
   </ion-item>
   <ion-item>
     <ion-icon slot='start' name='pricetag'></ion-icon>
-
-<!--- Categories anzeige --->
-
-    <ion-select interface='popover'  placeholder='Wählen Sie eine Kategorie' formControlName='categoryId'>
-      <ion-select-option role='option' *ngFor='let category of categories' [value]='category.id'>
-        {{category.name}}
+    <ion-select interface='popover'  placeholder='Wähle eine Kategorie'>
+      <ion-select-option role='option'>
       </ion-select-option>
     </ion-select>
-
-
-    <ion-button color="primary" slot='end' (click)='showCategoryModal()' >
+    <ion-button color="danger" slot='end' (click)='showExpenseModal ()' >
       <ion-icon slot='icon-only' name='add'></ion-icon>
     </ion-button>
   </ion-item>
   <ion-item>
     <ion-icon slot='start' name='cash-outline'></ion-icon>
-    <ion-input type='number' inputmode='decimal' placeholder="Betrag in CHF eingeben" formControlName='amount'></ion-input>
+    <ion-input type='number' inputmode='decimal' placeholder="Betrag in CHF eingeben"></ion-input>
     <ion-note slot='end'>CHF</ion-note>
   </ion-item>
   <ion-item>
@@ -56,7 +51,7 @@
     <ion-datetime-button datetime='datetime'></ion-datetime-button>
     <ion-modal [keepContentsMounted]='true'>
       <ng-template>
-        <ion-datetime color="primary" presentation='date-time' id='datetime' formControlName='date'> <span slot="title">Ausgabedatum auswählen</span> </ion-datetime>
+        <ion-datetime color="primary" presentation='date-time' id='datetime' formControlName='date'> <span slot="title">Wählen Sie das Ausgabedatum aus</span> </ion-datetime>
       </ng-template>
     </ion-modal>
   </ion-item>
