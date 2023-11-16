@@ -5,16 +5,25 @@ import { ExpenseModalComponent } from '../expense-modal/expense-modal.component'
 import { Category, Expense, ExpenseCriteria, SortOption } from '../../shared/domain';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
-import { debounce, finalize, interval, Subscription } from 'rxjs';
+import { debounce, finalize, from, groupBy, interval, mergeMap, Subscription, toArray } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { CategoryService } from '../../category/category.service';
+import { formatPeriod } from '../../shared/period';
+
+interface ExpenseGroup {
+  date: string;
+  expenses: Expense[];
+}
 
 @Component({
   selector: 'app-expense-overview',
   templateUrl: './expense-list.component.html',
 })
+
 export class ExpenseListComponent {
   date = set(new Date(), { date: 1 });
   expenses: Expense[] | null = null;
+  expenseGroups: ExpenseGroup[] | null = null;
   readonly initialSort = 'name,asc';
   lastPageReached = false;
   loading = false;
@@ -33,6 +42,7 @@ export class ExpenseListComponent {
     private readonly modalCtrl: ModalController,
     private readonly expenseService: ExpenseService,
     private readonly toastService: ToastService,
+    private readonly categoryService: CategoryService,
     private readonly formBuilder: FormBuilder,
   ) {
     this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
@@ -48,10 +58,49 @@ export class ExpenseListComponent {
   };
 
   private loadExpenses(next: () => void = () => {}): void {
+    this.searchCriteria.yearMonth = formatPeriod(this.date);
+    if (!this.searchCriteria.categoryIds?.length) delete this.searchCriteria.categoryIds;
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
     this.loading = true;
+    const groupByDate = this.searchCriteria.sort.startsWith('date');
     this.expenseService
       .getExpenses(this.searchCriteria)
+      .pipe(
+        finalize(() => (this.loading = false)),
+        mergeMap((expensePage) => {
+          this.lastPageReached = expensePage.last;
+          next();
+          if (this.searchCriteria.page === 0 || !this.expenseGroups) this.expenseGroups = [];
+          return from(expensePage.content).pipe(
+            groupBy((expense) => (groupByDate ? expense.date : expense.id)),
+            mergeMap((group) => group.pipe(toArray())),
+          );
+        }),
+      )
+      .subscribe({
+        next: (expenses: Expense[]) => {
+          const expenseGroup: ExpenseGroup = {
+            date: expenses[0].date,
+            expenses: this.sortExpenses(expenses),
+          };
+          const expenseGroupWithSameDate = this.expenseGroups!.find((other) => other.date === expenseGroup.date);
+          if (!expenseGroupWithSameDate || !groupByDate) this.expenseGroups!.push(expenseGroup);
+          else
+            expenseGroupWithSameDate.expenses = this.sortExpenses([
+              ...expenseGroupWithSameDate.expenses,
+              ...expenseGroup.expenses,
+            ]);
+        },
+        error: (error) => this.toastService.displayErrorToast('Could not load expenses', error),
+      });
+  }
+
+  private sortExpenses = (expenses: Expense[]): Expense[] => expenses.sort((a, b) => a.name.localeCompare(b.name));
+  private loadCategories(next: () => void = () => {}): void {
+    if (!this.searchCriteria.name) delete this.searchCriteria.name;
+    this.loading = true;
+    this.categoryService
+      .getCategories(this.searchCriteria)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -59,12 +108,12 @@ export class ExpenseListComponent {
         }),
       )
       .subscribe({
-        next: (expenses) => {
-          if (this.searchCriteria.page === 0 || !this.expenses) this.expenses = [];
-          this.expenses.push(...expenses.content);
-          this.lastPageReached = expenses.last;
+        next: (categories) => {
+          if (this.searchCriteria.page === 0 || !this.categories) this.categories = [];
+          this.categories.push(...categories.content);
+          this.lastPageReached = categories.last;
         },
-        error: (error) => this.toastService.displayErrorToast('Could not load expenses', error),
+        error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
       });
   }
 
