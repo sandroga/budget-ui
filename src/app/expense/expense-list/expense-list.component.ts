@@ -5,7 +5,7 @@ import { ExpenseModalComponent } from '../expense-modal/expense-modal.component'
 import { Category, Expense, ExpenseCriteria, SortOption } from '../../shared/domain';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
-import { debounce, finalize, from, groupBy, interval, mergeMap, Subscription, toArray } from 'rxjs';
+import { debounce, finalize, from, groupBy, interval, mergeMap, toArray } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CategoryService } from '../../category/category.service';
 import { formatPeriod } from '../../shared/period';
@@ -34,8 +34,10 @@ export class ExpenseListComponent {
     { label: 'Created at (oldest first)', value: 'createdAt,asc' },
     { label: 'Name (A-Z)', value: 'name,asc' },
     { label: 'Name (Z-A)', value: 'name,desc' },
+    { label: 'Date (newest first)', value: 'name,asc' },
+    { label: 'Date (oldest first)', value: 'name,desc' },
   ];
-  private readonly searchFormSubscription: Subscription;
+
   categories: Category[] = [];
 
   constructor(
@@ -45,8 +47,8 @@ export class ExpenseListComponent {
     private readonly categoryService: CategoryService,
     private readonly formBuilder: FormBuilder,
   ) {
-    this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
-    this.searchFormSubscription = this.searchForm.valueChanges
+    this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort], categoryIds: [] });
+    this.searchForm.valueChanges
       .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
       .subscribe((value) => {
         this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
@@ -137,8 +139,5 @@ export class ExpenseListComponent {
   reloadExpenses($event?: any): void {
     this.searchCriteria.page = 0;
     this.loadExpenses(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
-  }
-  ionViewDidLeave(): void {
-    this.searchFormSubscription.unsubscribe();
   }
 }
