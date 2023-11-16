@@ -1,22 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { filter, finalize, from } from 'rxjs';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
 import { ModalController } from '@ionic/angular';
+import { CategoryModalComponent } from '../../category/category-modal/category-modal.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from '../../category/category.service';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
-import { Category } from '../../shared/domain';
+import { Category, Expense } from '../../shared/domain';
+import { formatISO } from 'date-fns';
 
 @Component({
   selector: 'app-expense-modal',
   templateUrl: './expense-modal.component.html',
 })
-export class ExpenseModalComponent {
+export class ExpenseModalComponent implements OnInit {
+  ngOnInit() {
+    const { id, amount, category, date, name } = this.expense;
+    if (category) this.categories.push(category);
+    if (id) this.expenseForm.patchValue({ id, amount, categoryId: category?.id, date, name });
+    this.loadAllCategories();
+  }
+
   readonly expenseForm: FormGroup;
   submitting = false;
 
   categories: Category[] = [];
+  expense: Expense = {} as Expense;
 
   constructor(
     private readonly actionSheetService: ActionSheetService,
@@ -28,6 +38,8 @@ export class ExpenseModalComponent {
   ) {
     this.expenseForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(40)]],
+      amount: [],
+      date: [formatISO(new Date())],
     });
   }
 
@@ -55,10 +67,11 @@ export class ExpenseModalComponent {
       .subscribe(() => this.modalCtrl.dismiss(null, 'delete'));
   }
 
-  async showExpenseModal(): Promise<void> {
-    const expenseModal = await this.modalCtrl.create({ component: ExpenseModalComponent });
-    await expenseModal.present();
-    const { role } = await expenseModal.onWillDismiss();
+  async showCategoryModal(): Promise<void> {
+    const CategoryModal = await this.modalCtrl.create({ component: CategoryModalComponent });
+    CategoryModal.present();
+    const { role } = await CategoryModal.onWillDismiss();
+    if (role === 'refresh') this.loadAllCategories();
     console.log('role', role);
   }
   private loadAllCategories(): void {

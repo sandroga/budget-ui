@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { addMonths, set } from 'date-fns';
 import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
 import { ExpenseModalComponent } from '../expense-modal/expense-modal.component';
-import { Expense, ExpenseCriteria, SortOption } from '../../shared/domain';
+import { Category, Expense, ExpenseCriteria, SortOption } from '../../shared/domain';
 import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
 import { debounce, finalize, interval, Subscription } from 'rxjs';
@@ -27,6 +27,7 @@ export class ExpenseListComponent {
     { label: 'Name (Z-A)', value: 'name,desc' },
   ];
   private readonly searchFormSubscription: Subscription;
+  categories: Category[] = [];
 
   constructor(
     private readonly modalCtrl: ModalController,
