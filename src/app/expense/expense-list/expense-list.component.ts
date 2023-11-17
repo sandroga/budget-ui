@@ -47,7 +47,7 @@ export class ExpenseListComponent {
     private readonly categoryService: CategoryService,
     private readonly formBuilder: FormBuilder,
   ) {
-    this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort], categoryIds: [] });
+    this.searchForm = this.formBuilder.group({ categoryIds: [], name: [], sort: [this.initialSort] });
     this.searchForm.valueChanges
       .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
       .subscribe((value) => {
@@ -75,7 +75,8 @@ export class ExpenseListComponent {
           if (this.searchCriteria.page === 0 || !this.expenseGroups) this.expenseGroups = [];
           return from(expensePage.content).pipe(
             groupBy((expense) => (groupByDate ? expense.date : expense.id)),
-            mergeMap((group) => group.pipe(toArray())),
+            mergeMap((group) => group
+              .pipe(toArray())),
           );
         }),
       )
@@ -129,7 +130,7 @@ export class ExpenseListComponent {
     if (role === 'refresh') this.reloadExpenses();
     console.log('role', role);
   }
-  ionViewDidEnter(): void {
+  ionViewWillEnter(): void {
     this.loadExpenses();
   }
   loadNextExpensePage($event: any) {

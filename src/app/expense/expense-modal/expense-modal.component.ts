@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { filter, from } from 'rxjs';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
 import { ModalController } from '@ionic/angular';

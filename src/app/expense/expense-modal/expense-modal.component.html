@@ -45,9 +45,13 @@
   <ion-item>
     <ion-icon slot='start' name="calendar-number-outline"></ion-icon>
     <ion-datetime-button datetime='datetime'></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="datetime"></ion-datetime>
+      </ng-template>
+    </ion-modal>
     <ion-modal>
       <ng-template>
-        <ion-datetime color="primary" presentation='date' id='datetime' formControlName='date'> <span slot="title">Select the purchase date</span> </ion-datetime>
       </ng-template>
     </ion-modal>
   </ion-item>
