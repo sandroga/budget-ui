@@ -40,29 +40,8 @@
     </ion-row>
   </ion-grid>
 
-  <!-- Infinite Scroll -->
-  <ion-infinite-scroll [disabled]="lastPageReached || loading" (ionInfinite)="loadNextExpensePage($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-
-  <!-- Refresher -->
-  <ion-refresher slot="fixed" (ionRefresh)="reloadExpenses($event)" [disabled]="loading">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-
   <!-- Category List -->
   <ion-list [ngSwitch]="expenses?.length" inset="true">
-
-    <!-- Skeleton -->
-    <ng-container *ngSwitchCase="null">
-      <ion-item *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
-        <ion-label>
-          <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
-        </ion-label>
-      </ion-item>
-    </ng-container>
-
     <!-- Empty List -->
     <ion-item *ngSwitchCase="0">
       <ion-icon slot="start" name="alert-circle-outline"></ion-icon>
@@ -76,7 +55,7 @@
           <ion-label>{{expenseGroup.date | date:'dd.MM.yyyy'}}</ion-label>
         </ion-item-divider>
         <ion-item button='true' *ngFor='let expense of expenseGroup.expenses' [detail]='true' [disabled]='loading'
-           (click)='openModal(expense)'>
+                  (click)='openModal(expense)'>
           <ion-label>
             <ion-grid>
               <ion-row>
@@ -93,12 +72,22 @@
     </ng-container>
   </ion-list>
 
-  <!--ion-Fab Button-->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary" (click)="openModal()">
-      <ion-icon name="add" role="img"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+<!-- Infinite Scroll -->
+<ion-infinite-scroll [disabled]="lastPageReached || loading" (ionInfinite)="loadNextExpensePage($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+
+<!-- Refresher -->
+<ion-refresher slot="fixed" (ionRefresh)="reloadExpenses($event)" [disabled]="loading">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+
+<!--ion-Fab Button-->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button color="primary" (click)="openModal()">
+    <ion-icon name="add" role="img"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 </ion-content>
 
 <!-- footer -->
@@ -118,3 +107,4 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-footer>
+
