@@ -19,7 +19,6 @@ interface ExpenseGroup {
   selector: 'app-expense-overview',
   templateUrl: './expense-list.component.html',
 })
-
 export class ExpenseListComponent {
   date = set(new Date(), { date: 1 });
   expenses: Expense[] | null = null;
@@ -38,7 +37,7 @@ export class ExpenseListComponent {
     { label: 'Date (oldest first)', value: 'name,desc' },
   ];
 
-  categories: Category[] = [];
+  categories: Category[] | null = null;
 
   constructor(
     private readonly modalCtrl: ModalController,
@@ -52,14 +51,16 @@ export class ExpenseListComponent {
       .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
       .subscribe((value) => {
         this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
-        this.loadExpenses();
+        this.loadCategories(
+
+        );
       });
   }
   addMonths = (number: number): void => {
     this.date = addMonths(this.date, number);
   };
 
-  private loadExpenses(next: () => void = () => {}): void {
+  private loadCategories(next: () => void = () => {}): void {
     this.searchCriteria.yearMonth = formatPeriod(this.date);
     if (!this.searchCriteria.categoryIds?.length) delete this.searchCriteria.categoryIds;
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
@@ -98,26 +99,6 @@ export class ExpenseListComponent {
   }
 
   private sortExpenses = (expenses: Expense[]): Expense[] => expenses.sort((a, b) => a.name.localeCompare(b.name));
-  private loadCategories(next: () => void = () => {}): void {
-    if (!this.searchCriteria.name) delete this.searchCriteria.name;
-    this.loading = true;
-    this.categoryService
-      .getCategories(this.searchCriteria)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          next();
-        }),
-      )
-      .subscribe({
-        next: (categories) => {
-          if (this.searchCriteria.page === 0 || !this.categories) this.categories = [];
-          this.categories.push(...categories.content);
-          this.lastPageReached = categories.last;
-        },
-        error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
-      });
-  }
 
   async openModal(expense?: Expense): Promise<void> {
     const modal = await this.modalCtrl.create({
@@ -129,15 +110,15 @@ export class ExpenseListComponent {
     if (role === 'refresh') this.reloadExpenses();
     console.log('role', role);
   }
-  ionViewDidEnter(): void {
-    this.loadExpenses();
+  ionViewWillEnter(): void {
+    this.loadCategories();
   }
   loadNextExpensePage($event: any) {
     this.searchCriteria.page++;
-    this.loadExpenses(() => ($event as InfiniteScrollCustomEvent).target.complete());
+    this.loadCategories(() => ($event as InfiniteScrollCustomEvent).target.complete());
   }
   reloadExpenses($event?: any): void {
     this.searchCriteria.page = 0;
-    this.loadExpenses(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
+    this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
   }
 }

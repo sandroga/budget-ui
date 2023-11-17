@@ -76,7 +76,7 @@
           <ion-label>{{expenseGroup.date | date:'dd.MM.yyyy'}}</ion-label>
         </ion-item-divider>
         <ion-item button='true' *ngFor='let expense of expenseGroup.expenses' [detail]='true' [disabled]='loading'
-           (click)='openModal(expense)'>
+           (click)='openModal(expense)'>z
           <ion-label>
             <ion-grid>
               <ion-row>

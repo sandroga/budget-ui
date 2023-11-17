@@ -1,10 +1,11 @@
 <!-- Header -->
+<!-- Header -->
 <ion-header>
   <ion-toolbar>
     <ion-progress-bar *ngIf="submitting" type="indeterminate"></ion-progress-bar>
-    <ion-buttons slot='start' (click)='cancel()'>
+    <ion-buttons slot="start" (click)="cancel()">
       <ion-button color="medium" (click)="cancel()" [disabled]="submitting">
-        <ion-icon slot='start' name="close-circle-outline"></ion-icon>
+        <ion-icon slot="start" name="close-circle-outline"></ion-icon>
         Cancel
       </ion-button>
       <ng-template>Expense hinzufügen</ng-template>
@@ -13,48 +14,55 @@
       <div *ngIf="expense.id; else elseBlock">Edit Expense</div>
       <ng-template #elseBlock>Add Expense</ng-template>
     </ion-title>
-    <ion-buttons slot='end'>
+    <ion-buttons slot="end">
       <ion-button (click)="save()" [disabled]="expenseForm.pristine || expenseForm.invalid || submitting">
-        <ion-icon slot='start' name='save-outline'></ion-icon>
+        <ion-icon slot="start" name="save-outline"></ion-icon>
         Save
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <!-- Content -->
-<ion-content class="ion-padding" [formGroup]="expenseForm">
-  <ion-item>
-    <ion-icon name="text" slot="start"></ion-icon>
-    <ion-input placeholder="Enter the expense's name" formControlName='name' [disabled]='submitting'></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-icon slot='start' name='pricetag'></ion-icon>
-    <ion-select interface='popover'  placeholder='Choose a category' formControlName='categoryId'>
-      <ion-select-option role='option' *ngFor="let category of categories" [value]="category.id">{{category.name}}>
-      </ion-select-option>
-    </ion-select>
-    <ion-button color="danger" slot='end' (click)='showCategoryModal ()' >
-      <ion-icon slot='icon-only' name='add'></ion-icon>
-    </ion-button>
-  </ion-item>
-  <ion-item>
-    <ion-icon slot='start' name='cash-outline'></ion-icon>
-    <ion-input type='number' inputmode='decimal' placeholder="Enter the amount in CHF" step="0.10" formControlName="amount"></ion-input>
-    <ion-note slot='end'>CHF</ion-note>
-  </ion-item>
-  <ion-item>
-    <ion-icon slot='start' name="calendar-number-outline"></ion-icon>
-    <ion-datetime-button datetime='datetime'></ion-datetime-button>
-    <ion-modal>
-      <ng-template>
-        <ion-datetime color="primary" presentation='date' id='datetime' formControlName='date'> <span slot="title">Select the purchase date</span> </ion-datetime>
-      </ng-template>
-    </ion-modal>
-  </ion-item>
+<ion-content class="ion-padding">
+  <!-- Formular zur Erstellung einer Ausgabe -->
+  <form [formGroup]="expenseForm" (ngSubmit)="save()">
+    <ion-item>
+      <ion-label position="start">Name:</ion-label>
+      <ion-input formControlName="name" type="text"></ion-input>
+      <div *ngIf="expenseForm.get('name')?.hasError('required')" class="error-message">
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="start">Category:</ion-label>
+      <ion-select formControlName="categoryId" interface="popover" placeholder="Choose a category">
+        <ion-select-option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</ion-select-option>
+      </ion-select>
+      <ion-button color="danger" slot="end" (click)="showCategoryModal()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label position="start">Amount (CHF):</ion-label>
+      <ion-input formControlName="amount" type="number" inputmode="decimal" step="0.10"></ion-input>
+      <ion-note slot="end">CHF</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="start">Date</ion-label>
+      <ion-datetime-button datetime="datetime" position="start"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime id="datetime"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+    <ion-button type="submit" expand="full" [disabled]="expenseForm.invalid || submitting">Create Expense</ion-button>
+  </form>
+</ion-content>
 
   <ion-fab slot='fixed' vertical='bottom' horizontal='end'>
     <ion-fab-button (click)='delete()' color='danger'>
       <ion-icon name='trash-outline'></ion-icon>
     </ion-fab-button>
   </ion-fab>
-</ion-content>
+

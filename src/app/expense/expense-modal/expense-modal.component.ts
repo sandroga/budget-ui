@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { filter, from } from 'rxjs';
-import { ActionSheetService } from '../../shared/service/action-sheet.service';
+import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CategoryModalComponent } from '../../category/category-modal/category-modal.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -9,40 +7,44 @@ import { ToastService } from '../../shared/service/toast.service';
 import { ExpenseService } from '../expense.service';
 import { Category, Expense } from '../../shared/domain';
 import { formatISO, parseISO } from 'date-fns';
+import { ActionSheetService } from '../../shared/service/action-sheet.service';
+import { filter, from } from 'rxjs';
 
 @Component({
   selector: 'app-expense-modal',
   templateUrl: './expense-modal.component.html',
 })
-export class ExpenseModalComponent implements OnInit {
-  ngOnInit() {
-    const { id, amount, category, date, name } = this.expense;
-    if (category) this.categories.push(category);
-    if (id) this.expenseForm.patchValue({ id, amount, categoryId: category?.id, date, name });
-    this.loadAllCategories();
-  }
-
-  readonly expenseForm: FormGroup;
-  submitting = false;
-
-  categories: Category[] = [];
-  expense: Expense = {} as Expense;
-
-  constructor(
-    private readonly actionSheetService: ActionSheetService,
-    private readonly expenseService: ExpenseService,
-    private readonly formBuilder: FormBuilder,
-    private readonly modalCtrl: ModalController,
-    private readonly toastService: ToastService,
-    private readonly categoryService: CategoryService,
-  ) {
-    this.expenseForm = this.formBuilder.group({
-      categoryId: [],
-      name: ['', [Validators.required, Validators.maxLength(40)]],
-      amount: [],
-      date: [formatISO(new Date())],
+export class ExpenseModalComponent {
+    expenseForm: FormGroup = this.fb.group({
+        name: ['', Validators.required],
+        categoryId: [''],
+        amount: ['', [Validators.required, Validators.min(0)]],
+        date: [new Date().toISOString(), Validators.required],
     });
-  }
+
+    submitting = false;
+
+    categories: Category[] = [];
+    expense: Expense = {} as Expense;
+
+    constructor(
+        private fb: FormBuilder,
+        private expenseService: ExpenseService,
+        private readonly actionSheetService: ActionSheetService,
+        private readonly formBuilder: FormBuilder,
+        private readonly modalCtrl: ModalController,
+        private readonly toastService: ToastService,
+        private readonly categoryService: CategoryService
+    ){}
+
+    ngOnInit(): void {
+        this.expenseForm = this.fb.group({
+            name: ['', Validators.required],
+            categoryId: [''], // Dies ist das Feld für die Kategorie (optional)
+            amount: ['', [Validators.required, Validators.min(0)]],
+            date: [new Date().toISOString(), Validators.required], // Initialwert für das Datum
+        })
+    }
 
   save(): void {
     this.submitting = true;
@@ -57,7 +59,7 @@ export class ExpenseModalComponent implements OnInit {
           this.modalCtrl.dismiss(null, 'refresh');
         },
         error: (error) => this.toastService.displayErrorToast('Could not save category', error),
-      });
+      })
   }
 
   cancel(): void {
@@ -77,13 +79,14 @@ export class ExpenseModalComponent implements OnInit {
     if (role === 'refresh') this.loadAllCategories();
     console.log('role', role);
   }
+
   private loadAllCategories(): void {
     this.categoryService.getAllCategories({ sort: 'name,asc' }).subscribe({
       next: (categories) => (this.categories = categories),
       error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
     });
   }
-  ionViewWillEnter(): void {
+  ionViewDidEnter(): void {
     this.loadAllCategories();
   }
 }
