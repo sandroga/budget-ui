@@ -73,7 +73,8 @@ export class ExpenseListComponent {
           this.lastPageReached = expensePage.last;
           next();
           if (this.searchCriteria.page === 0 || !this.expenseGroups) this.expenseGroups = [];
-          return from(expensePage.content).pipe(
+          return from(expensePage.content)
+      .pipe(
             groupBy((expense) => (groupByDate ? expense.date : expense.id)),
             mergeMap((group) => group
               .pipe(toArray())),

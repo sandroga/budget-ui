@@ -40,7 +40,7 @@
     </ion-row>
   </ion-grid>
 
-  <!-- Category List -->
+  <!-- Expense List -->
   <ion-list [ngSwitch]="expenses?.length" inset="true">
     <!-- Empty List -->
     <ion-item *ngSwitchCase="0">
@@ -51,18 +51,21 @@
     <!-- Expenses -->
     <ng-container *ngSwitchDefault>
       <ion-item-group *ngFor='let expenseGroup of expenseGroups'>
-        <ion-item-divider>
-          <ion-label>{{expenseGroup.date | date:'dd.MM.yyyy'}}</ion-label>
-        </ion-item-divider>
+
         <ion-item button='true' *ngFor='let expense of expenseGroup.expenses' [detail]='true' [disabled]='loading'
                   (click)='openModal(expense)'>
           <ion-label>
             <ion-grid>
               <ion-row>
-                <ion-col>{{expense.name}}</ion-col>
+                <ion-col>
+                  <ion-icon name='pricetags-outline'></ion-icon>
+                  {{expense.name}}</ion-col>
                 <ion-col class='ion-text-center'>
                   <ion-icon name='pricetag'></ion-icon>
                   {{expense.category?.name}}</ion-col>
+                <ion-col class='ion-text-center'>
+                  <ion-icon name='calendar-outline'></ion-icon>
+                  {{expense.date}}</ion-col>
                 <ion-col class='ion-text-end'>{{expense.amount | currency:'CHF'}}</ion-col>
               </ion-row>
             </ion-grid>
