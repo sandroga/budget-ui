@@ -1,3 +1,5 @@
+// Made by San3
+
 import { Component } from '@angular/core';
 import { CategoryModalComponent } from '../category-modal/category-modal.component';
 import { InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';

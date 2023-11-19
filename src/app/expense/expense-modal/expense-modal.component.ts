@@ -1,3 +1,5 @@
+// Made by San3
+
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { BehaviorSubject, filter, from, mergeMap } from 'rxjs';

@@ -1,3 +1,5 @@
+// Made by San3
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -27,5 +29,3 @@ export class ExpenseService {
 
   deleteExpense = (id: string): Observable<void> => this.httpClient.delete<void>(`${this.apiUrl}/${id}`);
 }
-
-
