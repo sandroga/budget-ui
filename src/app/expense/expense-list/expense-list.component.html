@@ -1,5 +1,5 @@
 <!-- Header -->
-<ion-header>
+<ion-header role="banner">
   <ion-toolbar color="default">
     <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
     <ion-title>Expenses</ion-title>
@@ -8,7 +8,7 @@
 
 <!-- Content -->
 <ion-content>
-
+  <ion-refresher slot='fixed' (ionRefresh)='reloadExpenses($event)' [disabled]='loading'></ion-refresher>
   <!-- Search & Sort -->
   <ion-grid class="ion-padding" [formGroup]="searchForm">
     <ion-row>
@@ -26,7 +26,8 @@
         <ion-item>
           <ion-icon class="md hydrated" name="pricetag-outline" role="img" slot="start"></ion-icon>
           <ion-select placeholder='Category' interface='popover' multiple="true" formControlName="categoryIds">
-            <ion-select-option role='option'>
+            <ion-select-option role='option' *ngFor='let category of categories' [value]='category.id'>
+              {{category.name}}>
             </ion-select-option>
           </ion-select>
         </ion-item>
@@ -41,7 +42,17 @@
   </ion-grid>
 
   <!-- Expense List -->
-  <ion-list [ngSwitch]="expenses?.length" inset="true">
+  <ion-list [ngSwitch]="expenseGroups?.length" inset="true">
+
+    <!-- Skeleton -->
+    <ng-container *ngSwitchCase='null'>
+      <ion-item *ngFor='let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]'>
+        <ion-label>
+          <ion-skeleton-text [animated]='true' style='width: 80px'></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+
     <!-- Empty List -->
     <ion-item *ngSwitchCase="0">
       <ion-icon slot="start" name="alert-circle-outline"></ion-icon>
@@ -51,16 +62,18 @@
     <!-- Expenses -->
     <ng-container *ngSwitchDefault>
       <ion-item-group *ngFor='let expenseGroup of expenseGroups'>
-
+        <ion-item-divider>
+          <ion-label>{{expenseGroup.date | date:'dd.MM.yyyy'}}</ion-label>
+        </ion-item-divider>
         <ion-item button='true' *ngFor='let expense of expenseGroup.expenses' [detail]='true' [disabled]='loading'
                   (click)='openModal(expense)'>
           <ion-label>
             <ion-grid>
               <ion-row>
                 <ion-col>
-                  <ion-icon name='pricetags-outline'></ion-icon>
                   {{expense.name}}</ion-col>
                 <ion-col class='ion-text-center'>
+                <ion-icon name='pricetags-outline'></ion-icon>
                   <ion-icon name='pricetag'></ion-icon>
                   {{expense.category?.name}}</ion-col>
                 <ion-col class='ion-text-center'>
